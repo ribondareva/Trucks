@@ -1,0 +1,9 @@
+.idea/
+venv/
+.env
+__pycache__/
+cache_files/
+.git
+*.py[cod]
+*.sqlite3
+*.log

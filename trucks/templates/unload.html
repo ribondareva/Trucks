@@ -1,0 +1,98 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Разгрузка самосвалов</title>
+    <style>
+        .coord-input {
+            width: 120px;
+            padding: 5px;
+            margin: 2px;
+        }
+        table {
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Таблица 1: Самосвалы</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Бортовой номер</th>
+                <th>Модель</th>
+                <th>Макс. грузоподъёмность, т</th>
+                <th>Текущий вес, т</th>
+                <th>Перегруз, %</th>
+                <th>Координаты разгрузки (x y)</th>
+            </tr>
+            {% for truck in trucks %}
+            <tr>
+                <td>{{ truck.board_number }}</td>
+                <td>{{ truck.model.name }}</td>
+                <td>{{ truck.model.max_load }}</td>
+                <td>{{ truck.current_load|floatformat:0 }}</td>
+                <td>{{ truck.overload_percent|floatformat:0 }}</td>
+                <td>
+                    <input type="text"
+                           name="coord_{{ truck.id }}"
+                           class="coord-input"
+                           placeholder="x y"
+                           value="{{ form.coord_|add:truck.id|default:'' }}"
+                           required>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit">Рассчитать разгрузку</button>
+    </form>
+
+    {% if stock %}
+        <h2>Таблица 2: Склад</h2>
+        <table>
+            <tr>
+                <th>Название склада</th>
+                <th>Объём до разгрузки, т</th>
+                <th>Объём после разгрузки, т</th>
+                <th>Качественные характеристики</th>
+            </tr>
+            <tr>
+                <td>{{ stock.name }}</td>
+                <td>{{ volume_before|default:"—" }}</td>
+                <td>{{ stock.volume|floatformat:0 }}</td>
+                <td>{{ stock.sio2|floatformat:1 }}% SiO₂, {{ stock.fe|floatformat:1 }}% Fe</td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {% if messages %}
+    <div style="margin-top: 20px; color: red;">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>

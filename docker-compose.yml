@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_DB: unload_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=en_US.UTF-8 --lc-ctype=en_US.UTF-8'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d unload_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    command: >
+      sh -c "
+        sleep 5 &&
+        while ! pg_isready -h db -U user -d unload_db -t 1; do sleep 2; done &&
+        python manage.py makemigrations &&
+        python manage.py migrate &&
+        python manage.py loaddata initial_data &&
+        python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PYTHONUTF8: 1
+      LANG: C.UTF-8
+
+volumes:
+  pgdata:

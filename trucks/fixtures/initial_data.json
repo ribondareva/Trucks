@@ -1,0 +1,65 @@
+[
+  {
+    "model": "trucks.truckmodel",
+    "pk": 1,
+    "fields": {
+      "name": "БЕЛАЗ",
+      "max_load": 120
+    }
+  },
+  {
+    "model": "trucks.truckmodel",
+    "pk": 2,
+    "fields": {
+      "name": "Komatsu",
+      "max_load": 110
+    }
+  },
+  {
+    "model": "trucks.truck",
+    "pk": 1,
+    "fields": {
+      "board_number": "101",
+      "model": 1,
+      "current_load": 100,
+      "sio2": 32,
+      "fe": 67,
+      "unload_point": null
+    }
+  },
+  {
+    "model": "trucks.truck",
+    "pk": 2,
+    "fields": {
+      "board_number": "102",
+      "model": 1,
+      "current_load": 125,
+      "sio2": 30,
+      "fe": 65,
+      "unload_point": null
+    }
+  },
+  {
+    "model": "trucks.truck",
+    "pk": 3,
+    "fields": {
+      "board_number": "K103",
+      "model": 2,
+      "current_load": 120,
+      "sio2": 35,
+      "fe": 62,
+      "unload_point": null
+    }
+  },
+  {
+    "model": "trucks.stock",
+    "pk": 1,
+    "fields": {
+      "name": "Основной склад",
+      "volume": 900,
+      "sio2": 34,
+      "fe": 65,
+      "area": "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"
+    }
+  }
+]
